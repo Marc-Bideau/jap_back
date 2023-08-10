@@ -2,105 +2,73 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
 import { PrismaClient } from '@prisma/client';
 import { CreateCaractereDto } from './dto/createCaractereDto';
 import { UpdateCaractereDto } from './dto/updateCaractereDto';
+import { log } from 'console';
+import { CaractereService } from './caractere.service';
 
 @Controller('caractere')
 export class CaractereController {
-    prisma = new PrismaClient()
+    constructor(private service:CaractereService) {
 
+    }
     @Post()
     createCaractere(@Body() createCaractereDto:CreateCaractereDto){
         console.log(createCaractereDto);
         
-        return this.prisma.caractere.create({
-            data:createCaractereDto
-        })
+        return this.service.create(createCaractereDto);
 
     }
     @Post("/multiple") 
     createMultiples(@Body() json:CreateCaractereDto[]){
-        console.log(typeof json, json);
-        let listCara=[];
-        json.forEach(async element => {
-            console.log(element, typeof element.themeId);
-            
-            await listCara.push(await this.prisma.caractere.create({
-                data:element 
-            }))
-            console.log("caractere inserer", element)
-            
-        });
-        setTimeout(()=>{
-            console.log(listCara,"list");
-            
-        },10000)
+        return this.service.createMultiples(json);
     }
 
     @Get("/the/:id")
     findAllByThematique(@Param('id') param){
-        console.log("ici", param);
-        
-      return this.prisma.caractere.findMany({
-            where:{
-                themeId: parseInt(param)
-            }
-        })
+        return this.service.getByTheme(param)
     }
  
     @Get("/id/:id")
     findById(@Param('id') param){
-      return  this.prisma.caractere.findUnique({
-            where:{id:parseInt(param)}
-        })
+      return  this.service.getById(param);
     }
 
 
     @Get("/fr/:id")
     findByFrancais(@Param('id') param){
-        return this.prisma.caractere.findMany({
-            where:{
-                francais : param
-            }
-        })
+        return this.service.getByFr(param);
     }
 
     @Get("/kat/:id")
     findByKatakana(@Param('id') param){
-       return this.prisma.caractere.findMany({
-            where:{japonaisKata:param}
-        })
+       return this.service.getByKata(param)
     }
     @Get("/hir/:id")
     findByHiragana(@Param('id') param){
-       return this.prisma.caractere.findMany({
-            where:{japonaisHira:param}
-        })
+       return this.service.getByHira(param);
     }
     @Get("/Kanji/:id")
     findByKanji(@Param('id') param){
-       return this.prisma.caractere.findMany({
-            where:{kanji:param}
-        })
+       return this.service.getByKanji(param)
     }
     
     @Get()
     getAll(){
-        return this.prisma.caractere.findMany({take:1000});
+        return this.service.getAll();
     }
-    @Put()
-    updateCaractere( @Body() updateCaractereDto:UpdateCaractereDto){
-        return this.prisma.caractere.update({
-            where: {
-                id: updateCaractereDto.id
-            },
-            data:updateCaractereDto
-        })
+
+    @Post('/category')
+    async getAllFiveCategory(@Body() themes:any){   
+        console.log(themes);
+        
+        return this.service.category(themes);
+       
+    }
+    @Put(':id')
+    updateCaractere(@Param('id') id:number, @Body() updateCaractereDto:UpdateCaractereDto){
+        return this.service.update({where:{id:id},data:updateCaractereDto});
     }
     @Delete(":id")
-    deleteCaractere(@Param("id") param){
-       return this.prisma.caractere.delete({
-            where:{
-                id:parseInt(param)
-            }
-        })
+    deleteCaractere(@Param("id") param:number){
+       return this.service.delete({id:param});
     }    
 }

@@ -15,4 +15,6 @@ export class CreateCaractereDto{
     
     @ApiProperty()
     themeId:number;
+
+    theme:object;
 } 

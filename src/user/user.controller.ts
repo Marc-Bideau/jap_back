@@ -1,55 +1,44 @@
 import { PrismaClient, User } from '.prisma/client';
-import { Body, Controller, Get, Param, Post, Put, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { type } from 'os';
 import { UserCreateDto } from './user-create.dto/user-create.dto';
 import { UserUpdateDto } from './user-update.dto/user-update.dto';
+import { UserService } from './user.service';
 
 
 
 @Controller('user')
 export class UserController {
-    prisma = new PrismaClient()
-    
+    constructor(private readonly service: UserService) { }
+
     @Post()
     createUser(@Body() createUserDto:UserCreateDto){
-        return this.prisma.user.create({
-            data:{
-                login: createUserDto.login,
-                mdp: createUserDto.mdp,
-                pseudo: createUserDto.pseudo,
-                admin: createUserDto.admin
-            }
-        })        
+        return this.service.create(createUserDto);       
     }
 
     @Get()
     findAll(){
-        return this.prisma.user.findMany();
+        return this.service.getAll();
     }
 
     @Get(":id")
     findOneWithId(@Param('id') param){
-        return this.prisma.user.findFirst({where:{
-            id:parseInt(param)
-        }})
+        param = parseInt(param)
+
+        console.log(typeof param );
+        return this.service.getById({id:param});
     }
 
     @Put()
     update( @Body() updateUserDto: UserUpdateDto){
         console.log(updateUserDto,"lalalalalal");
 
-        return this.prisma.user.update({
-            where:{
-                id: updateUserDto.id,
-            },
-            data:{
-                login : updateUserDto.login,
-                mdp: updateUserDto.password,
-                pseudo: updateUserDto.pseudo,
-                admin:updateUserDto.admin
-            }
-        })
+        return this.update(updateUserDto);
+    }
+    @Delete(':id')
+    delete(@Param('id') param){
+        return this.delete(param);
     }
 
 }

@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  frontend:
+    build:
+      context: D:\perso\jap
+      dockerfile: DockerFile
+    ports:
+      - '4200:4200'
+    depends_on:
+      - backend
+    # env_file:
+    #   - .environement
+
+  backend:
+    build:
+      context: D:\perso\jap_back\jap_back
+      dockerfile: DockerFile
+    ports:
+      - '3000:3000'
+    env_file:
+      - env/development.env
