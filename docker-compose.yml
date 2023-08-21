@@ -13,20 +13,7 @@ services:
       - EXPIRESIN="60000s"
       - MAX_RESULTS=1000
     volumes:
-      - ./data:/app  # Créer un volume pour stocker les données de la base de données
+      - ./prisma:/app/prisma  # Créer un volume pour stocker les données de la base de données
 
     ports:
       - '3000:3000'
-    depends_on:
-      - prisma
-prisma:
-    image: prismagraphql/prisma:1.34   # Utilisation de l'image Docker de Prisma
-    ports:
-      - '4466:4466'   # Port utilisé par le serveur Prisma
-    environment:
-      PRISMA_CONFIG: |
-        managementApiSecret: YOUR_SECRET_KEY
-        databases:
-          default:
-            connector: sqlite
-            migrations: true   # Active les migrations automatiques de Prisma
