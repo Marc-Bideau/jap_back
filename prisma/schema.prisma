@@ -3,49 +3,58 @@
 
 generator client {
   provider = "prisma-client-js"
-    binaryTargets = ["native"] // Ajoutez cette ligne
-
+  binaryTargets = ["native"]
 }
 
 datasource db {
-/// DATABASE_URL: env('DATABASE_URL')
-provider = "sqlite"
-url      = env("DATABASE_URL")
-
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
+
 model User {
-  id    Int     @id @default(autoincrement())
-  login String  @unique 
-  mdp  String?
+  id     Int      @id @default(autoincrement())
+  login  String   @unique
+  mdp    String?
   pseudo String?
-  admin Boolean @default(false)
+  admin  Boolean  @default(false)
   controle Controle[]
 }
+
 model Controle {
-  id Int @id @default(autoincrement())
-  exercicesReponses String 
-  note Int 
-  date DateTime @default(now()) // Champ de date avec valeur par défaut
-  personne User @relation(fields: [personneId], references: [id])
-  personneId Int
+  id                Int      @id @default(autoincrement())
+  exercicesReponses String
+  note              Int
+  date              DateTime @default(now())
+  personne          User     @relation(fields: [personneId], references: [id])
+  personneId        Int
 }
+
 model Theme {
-  id Int @id @default(autoincrement())
-  thematique String @unique
+  id         Int        @id @default(autoincrement())
+  thematique String     @unique
   caracteres Caractere[]
 }
+
 model Caractere {
-  id    Int     @id @default(autoincrement())
-  francais String 
-  japonaisKata String? 
-  japonaisHira String? 
-  kanji String?
-  theme Theme @relation(fields: [themeId], references: [id])
-  themeId Int
+  id          Int      @id @default(autoincrement())
+  francais    String
+  japonaisKata String?
+  japonaisHira String?
+  kanji       String?
+  theme       Theme    @relation(fields: [themeId], references: [id])
+  themeId     Int
 }
-// Utilisez l'option schema pour désactiver le préfixe "main"
-// pour toutes les tables générées
+
 generator prisma {
   provider = "prisma-client-js"
   schema   = "public"
+}
+
+// Ajoutez cette ligne pour définir managementApiSecret
+// Remplacez "YOUR_SECRET_KEY" par une chaîne de caractères secrète
+// Gardez cette clé secrète en sécurité et ne la partagez pas
+configurations {
+  development {
+    managementApiSecret = "YOUR_SECRET_KEY"
+  }
 }
