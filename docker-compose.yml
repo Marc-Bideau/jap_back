@@ -8,7 +8,7 @@ services:
     container_name: Jap_back
     environment:
       - PORT=3000
-      - DATABASE_URL="file:./dev.db"
+      - DATABASE_URL=file:./dev.db
       - SECRETKEY="secret"
       - EXPIRESIN="60000s"
       - MAX_RESULTS=1000

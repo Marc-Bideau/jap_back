@@ -4,5 +4,5 @@ export const configuration = () => ({
      jwt: {
       secret: process.env.SECRETKEY,
       expiresIn: process.env.EXPIRESIN,
-    }
+    },DB: process.env.DATABASE_URL
   });
