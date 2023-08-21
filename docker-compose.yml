@@ -10,7 +10,7 @@ services:
       - PORT=3000
       - DATABASE_URL=file:./dev.db
       - SECRETKEY="secret"
-      - EXPIRESIN="60000s"
+      - EXPIRESIN=60000s
       - MAX_RESULTS=1000
     volumes:
       - ./prisma:/app/prisma  # Créer un volume pour stocker les données de la base de données
